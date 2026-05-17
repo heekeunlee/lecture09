@@ -18,9 +18,9 @@ const lessonGoals = [
 
 const lessonFlow = [
   { time: '3분', label: '01-08강 연결' },
-  { time: '8분', label: '문서 요약 원리' },
-  { time: '10분', label: '에러 코드 사례' },
-  { time: '14분', label: 'AI 작업지시서 실습' },
+  { time: '6분', label: '문서 요약 원리' },
+  { time: '18분', label: '에러 코드 사례' },
+  { time: '8분', label: 'AI 작업지시서 실습' },
   { time: '5분', label: '검증 체크' },
 ];
 
@@ -49,6 +49,49 @@ const comparisonRows = [
   { item: '입력', weak: '이 PDF 요약해줘', strong: 'E-472 알람과 진공 회복 지연 관련 항목만 찾아줘' },
   { item: '출력', weak: '긴 일반 요약문', strong: '가능 원인, 확인 데이터, 조치 순서, 근거 위치' },
   { item: '검증', weak: 'AI 답변을 그대로 복사', strong: '문서 페이지와 실제 센서 로그가 맞는지 확인' },
+];
+
+const caseBreakdown = [
+  {
+    phase: '1단계',
+    title: '증상 고정',
+    body: '알람명, 설비명, 발생 시각, 현재 운전 상태를 먼저 고정합니다. 이 단계가 흐리면 AI는 일반적인 진공 문제 설명으로 빠지기 쉽습니다.',
+  },
+  {
+    phase: '2단계',
+    title: '센서 로그 대조',
+    body: '진공도, 펌프 전류, 밸브 명령, 인터락 상태를 같은 시간축에 놓고 “회복 지연”이 실제로 발생했는지 확인합니다.',
+  },
+  {
+    phase: '3단계',
+    title: '매뉴얼 범위 지정',
+    body: '알람 코드표, 진공 계통 트러블슈팅, 안전 정지 조건처럼 AI가 찾아야 할 문서 위치를 좁힙니다.',
+  },
+  {
+    phase: '4단계',
+    title: '조치안 검증',
+    body: 'AI 답변을 바로 실행하지 않고 근거 페이지, 확인 데이터, 작업 중단 조건이 모두 붙어 있는지 점검합니다.',
+  },
+];
+
+const sensorReadings = [
+  { time: '09:10', pressure: '2.1e-5 Torr', current: '4.8 A', valve: 'Open', note: '정상 베이스라인' },
+  { time: '09:18', pressure: '4.9e-5 Torr', current: '5.4 A', valve: 'Open', note: '압력 회복 속도 둔화' },
+  { time: '09:24', pressure: '8.4e-5 Torr', current: '5.7 A', valve: 'Open', note: 'E-472 발생' },
+  { time: '09:30', pressure: '7.8e-5 Torr', current: '5.8 A', valve: 'Hold', note: '자동 재시도 실패' },
+];
+
+const manualEvidence = [
+  { source: 'Alarm Code Table p.4', evidence: 'E-472는 180초 이내 base pressure 미도달 시 발생', use: '알람 정의 확인' },
+  { source: 'Vacuum Troubleshooting p.9', evidence: '펌프 전류 상승 동반 시 배기 저항 또는 필터 막힘 확인', use: '원인 후보 1순위' },
+  { source: 'Maintenance SOP p.11', evidence: '챔버 개방 전 N2 purge와 정비 승인 필요', use: '중단 조건 표시' },
+];
+
+const actionMatrix = [
+  { priority: '1', action: '펌프 전류 추이와 최근 PM 이력 확인', owner: '공정/설비', decision: '전류 상승 지속 시 배기 라인 점검' },
+  { priority: '2', action: '밸브 Open 명령과 실제 포지션 로그 비교', owner: '설비', decision: '명령-상태 불일치면 밸브 인터락 확인' },
+  { priority: '3', action: '동일 챔버 직전 Lot의 base pressure 비교', owner: '공정', decision: 'Lot 무관 반복이면 설비 원인 가능성 상승' },
+  { priority: '4', action: 'SOP 안전 조건 확인 후 정비 요청 문장 작성', owner: '설비/안전', decision: '챔버 개방 전 승인 필요' },
 ];
 
 const practiceSteps = [
@@ -199,9 +242,10 @@ function App() {
 
         <section className="teaching-section">
           <span className="section-label">04. 실무 사례</span>
-          <h2>가상 알람 E-472를 기준으로 “문서 근거가 있는 1차 조치안”을 만들어봅니다</h2>
+          <h2>가상 알람 E-472를 단계적으로 분해해 “문서 근거가 있는 1차 조치안”을 만들어봅니다</h2>
           <p className="section-intro">
-            아래 상황을 AI에게 그대로 입력하지 않고, 문서 범위와 검증 규칙을 붙인 작업지시서로 바꾸는 방식에 집중합니다.
+            이 사례는 09강에서 가장 많은 시간을 쓰는 핵심 실습입니다. 알람 화면을 보고 바로 AI에게 질문하지 않고,
+            현장 데이터와 매뉴얼 근거를 차례대로 붙여 답변 품질을 끌어올리는 과정을 따라갑니다.
           </p>
 
           <div className="case-grid">
@@ -210,6 +254,108 @@ function App() {
                 <span>{item.key}</span>
                 <strong>{item.value}</strong>
               </article>
+            ))}
+          </div>
+
+          <div className="case-hero">
+            <figure className="case-image-card">
+              <img src="/lecture09/e472-equipment-context.png" alt="E-472 알람이 표시된 가상 설비 상황 이미지" />
+              <figcaption>가상 설비 상황: 증착 챔버 V-203에서 진공 회복 지연 알람 발생</figcaption>
+            </figure>
+            <div className="case-note">
+              <strong>사례에서 일부러 남겨둔 애매함</strong>
+              <p>
+                “진공이 늦게 잡힌다”는 말만으로는 펌프 문제, 밸브 문제, 누설, 레시피 조건 문제를 구분할 수 없습니다.
+                AI에게 맡길 일은 결론을 찍는 것이 아니라, 확인해야 할 근거를 빠짐없이 구조화하는 것입니다.
+              </p>
+            </div>
+          </div>
+
+          <div className="case-breakdown">
+            {caseBreakdown.map((item) => (
+              <article className="breakdown-card" key={item.phase}>
+                <span>{item.phase}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="evidence-layout">
+            <div>
+              <h3 className="subsection-title">센서 로그를 먼저 붙이면 질문이 구체화됩니다</h3>
+              <p className="mini-intro">
+                같은 알람 코드라도 압력만 높은 경우와 펌프 전류가 함께 상승하는 경우는 조치 방향이 달라집니다.
+                아래 표는 AI에게 함께 넣을 최소 로그 예시입니다.
+              </p>
+              <div className="sensor-table" role="table" aria-label="E-472 센서 로그">
+                <div className="sensor-row sensor-head" role="row">
+                  <span>시간</span>
+                  <span>압력</span>
+                  <span>펌프 전류</span>
+                  <span>밸브</span>
+                  <span>해석 메모</span>
+                </div>
+                {sensorReadings.map((row) => (
+                  <div className="sensor-row" role="row" key={row.time}>
+                    <span>{row.time}</span>
+                    <span>{row.pressure}</span>
+                    <span>{row.current}</span>
+                    <span>{row.valve}</span>
+                    <span>{row.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <figure className="case-image-card compact">
+              <img src="/lecture09/e472-sensor-trend.png" alt="E-472 압력과 펌프 전류 추이 도표" />
+              <figcaption>압력 회복 지연과 펌프 전류 상승을 같은 시간축에 배치</figcaption>
+            </figure>
+          </div>
+
+          <div className="manual-evidence-section">
+            <div>
+              <h3 className="subsection-title">매뉴얼은 전체 요약이 아니라 “근거 조각”으로 읽힙니다</h3>
+              <p className="mini-intro">
+                AI 답변에 페이지와 항목명이 붙어야 현장에서 재확인이 가능합니다. 아래처럼 문서별 역할을 나누면
+                답변이 긴 설명문이 아니라 조치 가능한 체크리스트로 바뀝니다.
+              </p>
+            </div>
+            <figure className="case-image-card">
+              <img src="/lecture09/e472-manual-evidence-map.png" alt="알람 코드표와 트러블슈팅 문서 근거 연결도" />
+              <figcaption>알람 정의, 원인 후보, 안전 조건을 분리해 근거화</figcaption>
+            </figure>
+            <div className="manual-table" role="table" aria-label="문서 근거 정리표">
+              <div className="manual-row manual-head" role="row">
+                <span>문서 위치</span>
+                <span>찾아야 할 근거</span>
+                <span>답변에서의 역할</span>
+              </div>
+              {manualEvidence.map((row) => (
+                <div className="manual-row" role="row" key={row.source}>
+                  <span>{row.source}</span>
+                  <span>{row.evidence}</span>
+                  <span>{row.use}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <h3 className="subsection-title">AI 답변은 조치 우선순위 표로 받아야 실행하기 쉽습니다</h3>
+          <div className="action-matrix" role="table" aria-label="조치 우선순위 매트릭스">
+            <div className="action-row action-head" role="row">
+              <span>우선순위</span>
+              <span>확인/조치</span>
+              <span>담당</span>
+              <span>판단 기준</span>
+            </div>
+            {actionMatrix.map((row) => (
+              <div className="action-row" role="row" key={row.priority}>
+                <span>{row.priority}</span>
+                <span>{row.action}</span>
+                <span>{row.owner}</span>
+                <span>{row.decision}</span>
+              </div>
             ))}
           </div>
 

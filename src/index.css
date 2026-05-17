@@ -184,13 +184,19 @@ section h2 {
 .learning-goal-card,
 .flow-card,
 .data-box,
+.breakdown-card,
 .practice-card,
 .metric-card,
 .prompt-card,
 .check-panel,
 .visual-panel,
+.case-image-card,
+.case-note,
 .pipeline-step,
-.comparison-row {
+.comparison-row,
+.sensor-row,
+.manual-row,
+.action-row {
   border: 1px solid var(--border);
   border-radius: 8px;
 }
@@ -204,6 +210,7 @@ section h2 {
 .learning-goal-card span,
 .flow-card span,
 .data-box span,
+.breakdown-card span,
 .prompt-card span {
   color: var(--accent);
   font-size: 0.9rem;
@@ -212,6 +219,7 @@ section h2 {
 
 .learning-goal-card h3,
 .flow-card h3,
+.breakdown-card h3,
 .pipeline-step h3,
 .practice-card h3 {
   font-size: 1.14rem;
@@ -222,8 +230,11 @@ section h2 {
 
 .learning-goal-card p,
 .flow-card p,
+.breakdown-card p,
 .pipeline-step p,
 .practice-card p,
+.case-note p,
+.mini-intro,
 .check-panel li {
   color: var(--text-secondary);
   font-family: var(--font-content);
@@ -341,6 +352,160 @@ section h2 {
   font-size: 1.05rem;
   line-height: 1.45;
   word-break: keep-all;
+}
+
+.case-hero {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: stretch;
+}
+
+.case-image-card {
+  background: #ffffff;
+  padding: 0.8rem;
+  margin: 0;
+}
+
+.case-image-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  background: #f6f8fb;
+}
+
+.case-image-card figcaption {
+  margin-top: 0.65rem;
+  color: var(--text-secondary);
+  font-family: var(--font-content);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.case-image-card.compact {
+  align-self: start;
+}
+
+.case-note {
+  background: #fff7ed;
+  border-color: rgba(249, 115, 22, 0.34);
+  padding: 1.15rem;
+}
+
+.case-note strong {
+  display: block;
+  color: var(--accent-orange);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  margin-bottom: 0.7rem;
+  word-break: keep-all;
+}
+
+.case-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.breakdown-card {
+  background: #ffffff;
+  padding: 1.1rem;
+}
+
+.breakdown-card h3 {
+  margin-top: 0.55rem;
+}
+
+.evidence-layout,
+.manual-evidence-section {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+.manual-evidence-section {
+  grid-template-columns: 0.8fr 1.2fr;
+}
+
+.manual-evidence-section .manual-table {
+  grid-column: 1 / -1;
+}
+
+.subsection-title {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin: 2rem 0 0.7rem;
+  word-break: keep-all;
+}
+
+.evidence-layout .subsection-title,
+.manual-evidence-section .subsection-title {
+  margin-top: 0;
+}
+
+.sensor-table,
+.manual-table,
+.action-matrix {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.sensor-row,
+.manual-row,
+.action-row {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: #ffffff;
+  color: var(--text-secondary);
+  font-family: var(--font-content);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.sensor-row {
+  grid-template-columns: 0.7fr 1fr 0.9fr 0.75fr 1.35fr;
+}
+
+.manual-row {
+  grid-template-columns: 0.9fr 1.55fr 0.95fr;
+}
+
+.action-row {
+  grid-template-columns: 0.55fr 1.55fr 0.75fr 1.35fr;
+}
+
+.sensor-row span:first-child,
+.manual-row span:first-child,
+.action-row span:first-child {
+  color: var(--text-primary);
+  font-weight: 900;
+}
+
+.sensor-head,
+.manual-head,
+.action-head {
+  background: #111827;
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-weight: 900;
+}
+
+.sensor-head span,
+.manual-head span,
+.action-head span,
+.sensor-head span:first-child,
+.manual-head span:first-child,
+.action-head span:first-child {
+  color: #ffffff;
 }
 
 .comparison-table {
@@ -473,7 +638,11 @@ section h2 {
   .lesson-timeline,
   .flow-ladder,
   .case-grid,
+  .case-hero,
+  .case-breakdown,
   .concept-split,
+  .evidence-layout,
+  .manual-evidence-section,
   .practice-layout,
   .metric-grid {
     grid-template-columns: 1fr;
@@ -524,5 +693,12 @@ section h2 {
   .comparison-row {
     grid-template-columns: 1fr;
     gap: 0.5rem;
+  }
+
+  .sensor-row,
+  .manual-row,
+  .action-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
   }
 }
