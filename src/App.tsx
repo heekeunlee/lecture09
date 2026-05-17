@@ -71,7 +71,7 @@ const practiceSteps = [
 ];
 
 const dataCards = [
-  { value: '12쪽', label: '수강생에게 제공할 가상 매뉴얼 범위' },
+  { value: '12쪽', label: '실습에 사용할 가상 매뉴얼 범위' },
   { value: '4개', label: 'AI가 반드시 구분해야 할 출력 블록' },
   { value: '5분', label: '현장 1차 대응 요약 목표 시간' },
 ];
@@ -201,7 +201,7 @@ function App() {
           <span className="section-label">04. 실무 사례</span>
           <h2>가상 알람 E-472를 기준으로 “문서 근거가 있는 1차 조치안”을 만들어봅니다</h2>
           <p className="section-intro">
-            수강생은 아래 상황을 AI에게 그대로 주지 않고, 문서 범위와 검증 규칙을 붙인 작업지시서로 바꿔야 합니다.
+            아래 상황을 AI에게 그대로 입력하지 않고, 문서 범위와 검증 규칙을 붙인 작업지시서로 바꾸는 방식에 집중합니다.
           </p>
 
           <div className="case-grid">
@@ -231,7 +231,7 @@ function App() {
 
         <section className="teaching-section">
           <span className="section-label">05. AI 작업지시서 실습</span>
-          <h2>수강생은 매뉴얼 요약 요청을 현장 대응용 프롬프트로 재작성합니다</h2>
+          <h2>매뉴얼 요약 요청을 현장 대응용 프롬프트로 재작성합니다</h2>
           <p className="section-intro">
             실습의 핵심은 멋진 문장이 아니라 통제 가능한 입력입니다. AI가 모르는 내용을 지어내지 않도록 문서 범위,
             출력 항목, 검증 규칙을 한 번에 묶습니다.
